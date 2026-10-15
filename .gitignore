@@ -28,3 +28,6 @@ data/outputs/*
 *.tmp
 .DS_Store
 Thumbs.db
+
+# Local Git metadata
+.git-project/
