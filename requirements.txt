@@ -1,0 +1,11 @@
+﻿duckdb
+pyarrow
+pandas
+numpy
+sqlalchemy
+psycopg[binary]
+scikit-learn
+matplotlib
+seaborn
+jupyterlab
+openpyxl
