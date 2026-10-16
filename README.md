@@ -5,9 +5,10 @@ data into weekly demand forecasts, product classifications, inventory policy
 scenarios, and Power BI reporting. The Python pipeline uses a
 Bronze/Silver/Gold data architecture and DuckDB/Parquet for data processing.
 
-This repository contains the analysis code and scripts that generate its
-scenario outputs. It does not claim that forecast metrics translate directly
-into savings, fewer stockouts, or other realized business outcomes.
+I built this project end to end, covering data engineering, forecasting
+models, ABC/XYZ product analysis, inventory scenarios, and the Power BI
+dashboard. The forecast metrics reported here are holdout evaluation results,
+not measured business savings or stockout reductions.
 
 ![Executive Overview dashboard](docs/screenshots/executive-overview.png)
 
@@ -378,3 +379,10 @@ Possible next steps include parameterizing local data paths, aligning the PBIP
 report/model with the three-page PBIX, adding automated tests for core metric
 and transformation logic, and extending inventory analysis with actual stock,
 cost, and replenishment constraints.
+
+## Author
+
+**Vivek Hegde** · [GitHub @vivekhegde-IS](https://github.com/vivekhegde-IS)
+
+Designed and built the full project: data pipeline, forecasting models,
+product classification, inventory scenario analysis, and Power BI dashboard.
