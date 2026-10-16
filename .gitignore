@@ -29,5 +29,8 @@ data/outputs/*
 .DS_Store
 Thumbs.db
 
+# Power BI local cache and machine-specific settings
+**/.pbi/
+
 # Local Git metadata
 .git-project/

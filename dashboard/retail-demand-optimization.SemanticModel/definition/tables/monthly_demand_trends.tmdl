@@ -1,0 +1,139 @@
+table monthly_demand_trends
+	lineageTag: b4f42d48-8d75-4004-8add-678358bff1ee
+
+	column month
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 68d684f5-5290-4ad3-9a0d-a7af7f3efd7c
+		summarizeBy: none
+		sourceColumn: month
+
+		variation Variation
+			isDefault
+			relationship: 0581adb0-3659-4753-8b81-c937d641e5c5
+			defaultHierarchy: LocalDateTable_dcb72467-22a2-4108-8689-30b69a9f334d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column state_id
+		dataType: string
+		lineageTag: ed92ff75-6183-49e1-a76f-3a62cc8571fe
+		summarizeBy: none
+		sourceColumn: state_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_id
+		dataType: string
+		lineageTag: 6d6e16c4-221a-42f1-861b-fc8f4e2a5eb7
+		summarizeBy: none
+		sourceColumn: store_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column cat_id
+		dataType: string
+		lineageTag: 2824711b-efb1-41a4-991d-9afe30c07961
+		summarizeBy: none
+		sourceColumn: cat_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column units_sold
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a9f5a4d-216f-40cd-8273-3a43b6387e30
+		summarizeBy: sum
+		sourceColumn: units_sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column estimated_revenue
+		dataType: double
+		lineageTag: a3c23ac8-8d11-4cd0-960f-dcee975ec12a
+		summarizeBy: sum
+		sourceColumn: estimated_revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column products_in_catalog
+		dataType: int64
+		formatString: 0
+		lineageTag: e012ea8c-d291-406e-8a33-dccc46dcc490
+		summarizeBy: sum
+		sourceColumn: products_in_catalog
+
+		annotation SummarizationSetBy = Automatic
+
+	column products_sold
+		dataType: int64
+		formatString: 0
+		lineageTag: fe801829-c89e-48e7-b0d0-f123229ed48b
+		summarizeBy: sum
+		sourceColumn: products_sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_store_days_with_sales
+		dataType: int64
+		formatString: 0
+		lineageTag: 27eb2a9e-0543-499b-bd43-f3373c7a3803
+		summarizeBy: sum
+		sourceColumn: product_store_days_with_sales
+
+		annotation SummarizationSetBy = Automatic
+
+	column units_sold_previous_year
+		dataType: int64
+		formatString: 0
+		lineageTag: 8a503d41-a06e-44c4-8eab-ca5841e868ed
+		summarizeBy: sum
+		sourceColumn: units_sold_previous_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column estimated_revenue_previous_year
+		dataType: double
+		lineageTag: a16b743a-ff66-48c1-8d9c-fb2d5a2b3408
+		summarizeBy: sum
+		sourceColumn: estimated_revenue_previous_year
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column units_yoy_change_pct
+		dataType: double
+		lineageTag: 86b76bcb-7f56-40db-b461-bf6695c33c4e
+		summarizeBy: sum
+		sourceColumn: units_yoy_change_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column revenue_yoy_change_pct
+		dataType: double
+		lineageTag: 7676305f-778a-4c7d-917f-1c49e9ccebed
+		summarizeBy: sum
+		sourceColumn: revenue_yoy_change_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition monthly_demand_trends = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\vivek\Downloads\data analytics\retail forecasting\retail-demand-optimization\data\outputs\powerbi\monthly_demand_trends.csv"),[Delimiter=",", Columns=13, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"month", type date}, {"state_id", type text}, {"store_id", type text}, {"cat_id", type text}, {"units_sold", Int64.Type}, {"estimated_revenue", type number}, {"products_in_catalog", Int64.Type}, {"products_sold", Int64.Type}, {"product_store_days_with_sales", Int64.Type}, {"units_sold_previous_year", Int64.Type}, {"estimated_revenue_previous_year", type number}, {"units_yoy_change_pct", type number}, {"revenue_yoy_change_pct", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table

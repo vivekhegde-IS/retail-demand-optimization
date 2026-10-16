@@ -9,3 +9,6 @@ matplotlib
 seaborn
 jupyterlab
 openpyxl
+lightgbm
+streamlit
+plotly

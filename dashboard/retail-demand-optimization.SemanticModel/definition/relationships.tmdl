@@ -1,0 +1,8 @@
+relationship 0581adb0-3659-4753-8b81-c937d641e5c5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: monthly_demand_trends.month
+	toColumn: LocalDateTable_dcb72467-22a2-4108-8689-30b69a9f334d.Date
+
+relationship AutoDetected_db4e4673-bfda-4858-a308-469e3dd8f61b
+	fromColumn: monthly_demand_trends.cat_id
+	toColumn: category_sales.cat_id
