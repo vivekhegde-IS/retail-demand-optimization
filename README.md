@@ -9,6 +9,8 @@ This repository contains the analysis code and scripts that generate its
 scenario outputs. It does not claim that forecast metrics translate directly
 into savings, fewer stockouts, or other realized business outcomes.
 
+![Executive Overview dashboard](docs/screenshots/executive-overview.png)
+
 ## Business problem and objectives
 
 Retail teams need to understand sales patterns at product and store level,
@@ -151,37 +153,59 @@ This is **inventory scenario analysis**, not a full inventory optimization
 engine. It does not model inventory on hand, replenishment decisions, supplier
 constraints, ordering costs, or realized stockout outcomes.
 
-## Verified forecast results
+## Forecast results
 
-The current local Parquet outputs were verified during this handoff, and the
-script definitions confirm the metric formulas. WAPE is
-`100 × sum(abs(actual - forecast)) / sum(actual)` and is reported as a
-percentage; lower is better. MAE is the average absolute forecast error in
-weekly units per evaluated product/store forecast.
+WAPE is `100 × sum(abs(actual - forecast)) / sum(actual)` and is reported as a
+percentage; lower is better. MAE and RMSE are in weekly units per evaluated
+product/store forecast. Each model was evaluated on the same 853,720
+product/store/week forecasts in the 28-week holdout.
 
-| Model | WAPE | MAE |
-|---|---:|---:|
-| LightGBM | 36.040774% | 3.334665 units |
-| Seasonal naive (52-week) | 64.244663% | Not listed here |
-| Naive | 41.619896% | Not listed here |
+| Rank | Model | WAPE | MAE | RMSE |
+|---:|---|---:|---:|---:|
+| 1 | LightGBM | 36.04% | 3.33 | 7.80 |
+| 2 | Moving average (4-week) | 37.63% | 3.48 | 8.66 |
+| 3 | Naive | 41.62% | 3.85 | 8.92 |
+| 4 | Moving average (13-week) | 42.05% | 3.89 | 9.85 |
+| 5 | Seasonal naive (52-week) | 64.24% | 5.94 | 14.36 |
 
 The metric outputs are
 `data/outputs/forecasting/lightgbm_model_metrics.parquet` and
 `data/outputs/forecasting/model_comparison.parquet`. Those generated files are
-ignored by Git, so the values above describe the verified local run and are not
+ignored by Git, so the values above describe a local run and are not
 recreated merely by cloning the repository. These metrics alone do not establish
 business savings, improved availability, or stockout reduction.
 
 ## Power BI report
 
-The PBIX file contains these three named report pages:
+The PBIX file contains three report pages.
 
-1. **Executive Overview** — sales KPIs, category comparisons, monthly trends,
-   and slicers.
-2. **Forecast Performance** — actual-versus-forecast views, model WAPE
-   comparison, forecast metrics, and weekly data.
-3. **Product Intelligence** — top products by revenue and units, ABC/XYZ
-   analysis, and demand variability.
+### 1. Executive Overview
+
+Total units sold (66.9M), estimated revenue (191.6M), and average daily units
+(34.3K), with the monthly sales trend from 2011 to 2016, units and revenue by
+category, and category and date-range slicers.
+
+![Executive Overview](docs/screenshots/executive-overview.png)
+
+### 2. Forecast Performance
+
+Weekly LightGBM actual-versus-forecast units across the holdout, WAPE by model,
+and KPI cards for average weekly error (10.68K units), forecast accuracy
+(100 − WAPE = 63.96%), and forecast bias (−1.91%), plus a week-level table.
+
+![Forecast Performance](docs/screenshots/forecast-performance.png)
+
+### 3. Product Intelligence
+
+Top 10 products by estimated revenue and by units sold, estimated revenue by
+ABC class split by XYZ demand variability, and the most volatile products by
+demand coefficient of variation.
+
+![Product Intelligence](docs/screenshots/product-intelligence.png)
+
+The screenshots are exported from the PBIX and stored in `docs/screenshots/`.
+
+### Opening the report
 
 Open the PBIX in Power BI Desktop:
 
@@ -197,9 +221,8 @@ The editable PBIP project is also present:
 above, but the PBIP report definition currently lists only one generic
 `Page 1`. Its semantic model currently contains two imported business tables,
 `monthly_demand_trends` and `category_sales`, plus Power BI date tables. The
-PBIP's Power Query definitions point to absolute CSV paths under the original
-developer's `C:\Users\vivek\...` directory. No dashboard changes were made as
-part of this documentation work.
+PBIP's Power Query definitions point to absolute local CSV paths
+(`C:\Users\vivek\...`).
 
 The PBIP report data is read from:
 
@@ -212,16 +235,6 @@ after their Gold inputs are ready, then update the two Power Query file paths
 in Power BI Desktop if the project is in a different directory. The
 `data/outputs/powerbi/dashboard_data/` folder also contains generated CSVs, but
 the checked PBIP semantic model does not currently reference those files.
-
-No dashboard screenshot images were found in the repository. After opening the
-PBIX, capture each page in Power BI Desktop and save the images to
-`docs/screenshots/` using these names:
-
-- `executive-overview.png`
-- `forecast-performance.png`
-- `product-intelligence.png`
-
-No placeholder screenshots are included.
 
 ## Technology stack
 
@@ -245,6 +258,8 @@ file also includes additional analysis and application packages.
 │   └── outputs/
 │       ├── forecasting/        # forecasts and evaluation Parquet
 │       └── powerbi/            # report-source and other generated CSVs
+├── docs/
+│   └── screenshots/            # Power BI dashboard page images
 ├── src/
 │   ├── ingestion/
 │   ├── transformation/
@@ -345,12 +360,10 @@ its outputs have been generated.
 
 ## Validation and limitations
 
-- The `tests/` directory is empty; no automated pytest or unittest suite was
-  found during this inspection.
+- There is no automated pytest or unittest suite yet.
 - Validation is currently provided by the standalone scripts named
-  `validate_*.py`. All 16 existing validation scripts passed against the
-  current generated outputs during this handoff. A fresh end-to-end rebuild was
-  not run.
+  `validate_*.py`. All 16 validation scripts passed against the current
+  generated outputs; a fresh end-to-end rebuild has not been run.
 - Source discovery is not portable until the hardcoded `DATASET` path in
   `build_bronze.py` is updated for the local machine.
 - PBIP data queries also contain absolute paths and need to be repointed after
